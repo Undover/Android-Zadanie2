@@ -7,9 +7,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +32,7 @@ public class TaskFragment extends Fragment {
     private EditText nameField;
     private EditText dateField;
     private CheckBox doneCheckBox;
+    private Spinner categorySpinner;
 
     private final Calendar calendar = Calendar.getInstance();
 
@@ -78,9 +82,6 @@ public class TaskFragment extends Fragment {
                         calendar.get(Calendar.DAY_OF_MONTH))
                         .show());
         setupDateFieldValue(task.getDate());
-//        dateButton = view.findViewById(R.id.task_date);
-//        dateButton.setText(task.getDate().toString());
-//        dateButton.setEnabled(false);
 
         doneCheckBox = view.findViewById(R.id.task_done);
         doneCheckBox.setChecked(task.isDone());
@@ -89,8 +90,22 @@ public class TaskFragment extends Fragment {
         });
 
         nameField.setText(task.getName());
-//        dateButton.setText(task.getDate().toString());
         doneCheckBox.setChecked(task.isDone());
+
+        categorySpinner = view.findViewById(R.id.task_category);
+        categorySpinner.setAdapter(new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, Category.values()));
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                task.setCategory(Category.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        categorySpinner.setSelection(task.getCategory().ordinal());
         return view;
     }
 
