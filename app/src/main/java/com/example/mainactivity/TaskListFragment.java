@@ -1,10 +1,12 @@
 package com.example.mainactivity;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,6 +57,12 @@ public class TaskListFragment extends Fragment {
         private TextView nameTextView;
         private TextView dateTextView;
         private ImageView iconImageView;
+
+        public CheckBox getDoneCheckBox() {
+            return doneCheckBox;
+        }
+
+        private CheckBox doneCheckBox;
         private Task task;
 
         public TaskHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -64,6 +72,7 @@ public class TaskListFragment extends Fragment {
             nameTextView = itemView.findViewById(R.id.task_item_name);
             dateTextView = itemView.findViewById(R.id.task_item_date);
             iconImageView = itemView.findViewById(R.id.iconImageView);
+            doneCheckBox = itemView.findViewById(R.id.doneCheckBox);
         }
 
         public void bind(Task task) {
@@ -75,6 +84,8 @@ public class TaskListFragment extends Fragment {
             } else {
                 iconImageView.setImageResource(R.drawable.ic_studies);
             }
+            doneCheckBox.setChecked(task.isDone());
+
         }
 
         @Override
@@ -103,6 +114,22 @@ public class TaskListFragment extends Fragment {
         public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
             Task task = tasks.get(position);
             holder.bind(task);
+            CheckBox checkBox = holder.getDoneCheckBox();
+            checkBox.setChecked(tasks.get(position).isDone());
+            TextView textView = holder.itemView.findViewById(R.id.task_item_name);
+            if (checkBox.isChecked()) {
+                textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                textView.setPaintFlags(textView.getPaintFlags() &~ Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                tasks.get(holder.getBindingAdapterPosition()).setDone(isChecked);
+                if (isChecked) {
+                    textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    textView.setPaintFlags(textView.getPaintFlags() &~ Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+            });
         }
 
         @Override
