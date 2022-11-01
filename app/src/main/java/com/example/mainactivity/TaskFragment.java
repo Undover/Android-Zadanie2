@@ -1,5 +1,6 @@
 package com.example.mainactivity;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class TaskFragment extends Fragment {
@@ -22,8 +27,10 @@ public class TaskFragment extends Fragment {
 
 
     private EditText nameField;
-    private Button dateButton;
+    private EditText dateField;
     private CheckBox doneCheckBox;
+
+    private final Calendar calendar = Calendar.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,10 +38,6 @@ public class TaskFragment extends Fragment {
 
         UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
         task = TaskStorage.getInstance().getTask(taskId);
-
-//        View view = getView();
-
-
     }
 
     @Nullable
@@ -59,16 +62,34 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        dateButton = view.findViewById(R.id.task_date);
-        dateButton.setText(task.getDate().toString());
-        dateButton.setEnabled(false);
+        dateField = view.findViewById(R.id.task_date);
+        DatePickerDialog.OnDateSetListener date = (view12, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            setupDateFieldValue(calendar.getTime());
+            task.setDate(calendar.getTime());
+        };
+        dateField.setOnClickListener(view1 ->
+                new DatePickerDialog(getContext(),
+                        date,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show());
+        setupDateFieldValue(task.getDate());
+//        dateButton = view.findViewById(R.id.task_date);
+//        dateButton.setText(task.getDate().toString());
+//        dateButton.setEnabled(false);
 
         doneCheckBox = view.findViewById(R.id.task_done);
         doneCheckBox.setChecked(task.isDone());
-        doneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> task.setDone(isChecked));
+        doneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) ->  {
+            task.setDone(isChecked);
+        });
 
         nameField.setText(task.getName());
-        dateButton.setText(task.getDate().toString());
+//        dateButton.setText(task.getDate().toString());
         doneCheckBox.setChecked(task.isDone());
         return view;
     }
@@ -79,5 +100,11 @@ public class TaskFragment extends Fragment {
         TaskFragment taskFragment = new TaskFragment();
         taskFragment.setArguments(bundle);
         return taskFragment;
+    }
+
+    private void setupDateFieldValue(Date date) {
+        Locale locale = new Locale("pl", "PL");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", locale);
+        dateField.setText(dateFormat.format(date));
     }
 }
