@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,7 @@ public class TaskListFragment extends Fragment {
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView nameTextView;
         private TextView dateTextView;
+        private ImageView iconImageView;
         private Task task;
 
         public TaskHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -61,12 +63,18 @@ public class TaskListFragment extends Fragment {
 
             nameTextView = itemView.findViewById(R.id.task_item_name);
             dateTextView = itemView.findViewById(R.id.task_item_date);
+            iconImageView = itemView.findViewById(R.id.iconImageView);
         }
 
         public void bind(Task task) {
             this.task = task;
             nameTextView.setText(task.getName());
             dateTextView.setText(task.getDate().toString());
+            if (task.getCategory().equals(Category.HOME)) {
+                iconImageView.setImageResource(R.drawable.ic_home);
+            } else {
+                iconImageView.setImageResource(R.drawable.ic_studies);
+            }
         }
 
         @Override
