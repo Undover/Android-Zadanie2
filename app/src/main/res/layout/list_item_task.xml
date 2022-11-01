@@ -40,7 +40,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/task_item_name"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_home" />
+            app:srcCompat="@drawable/ic_home"
+            android:padding="@dimen/task_item_padding"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
