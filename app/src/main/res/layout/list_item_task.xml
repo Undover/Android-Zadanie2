@@ -29,7 +29,8 @@
             android:layout_marginEnd="1dp"
             app:layout_constraintBaseline_toBaselineOf="@+id/doneCheckBox"
             app:layout_constraintEnd_toStartOf="@+id/iconImageView"
-            app:layout_constraintStart_toEndOf="@+id/doneCheckBox" />
+            app:layout_constraintStart_toEndOf="@+id/doneCheckBox"
+            style="@style/my_style"/>
 
         <ImageView
             android:id="@+id/iconImageView"
